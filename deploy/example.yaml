@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: csi-zram-app
+spec:
+  containers:
+    - name: csi-zram-ctr
+      image: busybox
+      command:
+        - sleep
+        - "3600"
+      volumeMounts:
+      - name: csi-zram-inline-vol
+        mountPath: "/data"
+      resources:
+        limits:
+          cpu: "1"
+          memory: "256M"
+  volumes:
+    - name: csi-zram-inline-vol
+      ephemeral:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: zram-csi
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 256M
